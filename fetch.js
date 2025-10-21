@@ -86,6 +86,8 @@ async function fetchData() {
     const allRecords = cpcb.data.records || [];
     const tnRecords = allRecords.filter(r => (r.state || '').trim().toLowerCase() === 'tamil nadu');
 
+    if (tnRecords.length === 0) console.log('⚠️  Zero TN records this hour');
+    
     // Filter records station-wise
     if (tnRecords.length) {
       await admin.database().ref('cpcb_tamilnadu').push({
