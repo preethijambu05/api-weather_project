@@ -90,7 +90,7 @@ async function fetchData() {
     for (const rec of allRecords) {
       const station = (rec.station || "").toLowerCase();
 
-      const matched = stationNames.find((s) => station.includes(s.split(" ")[0]));
+      const matched = stationNames.find((s) => station === s.toLowerCase());
       if (matched) {
         const cleanName = matched
           .replace(/\s+/g, "_")
