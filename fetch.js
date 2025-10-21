@@ -84,37 +84,18 @@ async function fetchData() {
     );
 
     const allRecords = cpcb.data.records || [];
-    const matchedStations = {};
+    const tnRecords = allRecords.filter(r => (r.state || '').trim().toLowerCase() === 'tamil nadu');
 
     // Filter records station-wise
-    for (const rec of allRecords) {
-      const station = (rec.station || "").toLowerCase();
-
-      const matched = stationNames.find((s) => station === s.toLowerCase());
-      if (matched) {
-        const cleanName = matched
-          .replace(/\s+/g, "_")
-          .replace(/[^\w_]/g, "");
-
-        if (!matchedStations[cleanName]) matchedStations[cleanName] = [];
-        matchedStations[cleanName].push(rec);
-      }
-    }
-
-    // Save grouped by station
-    for (const [station, records] of Object.entries(matchedStations)) {
-      await admin.database().ref(`cpcb_filtered/${station}`).push({
-        records,
-        time: timeNow,
+    if (tnRecords.length) {
+      await admin.database().ref('cpcb_tamilnadu').push({
+        records: tnRecords,
+        count: tnRecords.length,
+        time: new Date().toISOString()
       });
-      console.log(`🧪 Saved ${records.length} records under ${station}`);
-    }
-
-    if (Object.keys(matchedStations).length === 0) {
-      console.warn("⚠️ No matching CPCB records found for Tamil Nadu stations.");
     }
   } catch (err) {
-    console.error("❌ CPCB API error:", err.message);
+    // silently ignore
   }
 }
 
