@@ -1,0 +1,25 @@
+name: Fetch every hour
+
+on:
+  schedule:          # runs at :00 every hour
+    - cron: "0 * * * *"
+  workflow_dispatch: # manual button
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4          # download the repo
+      - uses: actions/setup-node@v4        # install Node 20
+        with:
+          node-version: 20
+      - run: echo "$SA_JSON" > sa.json     # save the firebase key
+        env:
+          SA_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      - run: npm install axios firebase-admin   # get tiny helpers
+      - run: node fetch.js                 # run the script
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: sa.json
+          OW_KEY:  ${{ secrets.OW_KEY }}
+          CBCP_KEY: ${{ secrets.CBCP_KEY }}
+          FIREBASE_PROJECT_ID: real-time-data-838a7
