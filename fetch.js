@@ -4,7 +4,7 @@ const admin  = require('firebase-admin');
 // let firebase-admin read the key we saved
 admin.initializeApp({
   credential: admin.credential.cert(require('./sa.json')),
-  databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}-default-rtdb.firebaseio.com`
+  databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}-default-rtdb.asia-southeast1.firebasedatabase.app`
 });
 
 async function getData() {
