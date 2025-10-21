@@ -54,7 +54,7 @@ async function fetchData() {
   for (const [name, lat, lon] of locations) {
     try {
       const weather = await axios.get(
-        'https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${process.env.OW_KEY}&units=metric'
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${process.env.OW_KEY}&units=metric`
       );
 
       const data = {
@@ -70,17 +70,17 @@ async function fetchData() {
       };
 
       const locKey = name.replace(/\s+/g, "_");
-      await admin.database().ref(openweather/${locKey}).push(data);
-      console.log(🌤 Weather saved: ${name});
+      await admin.database().ref(`openweather/${locKey}`).push(data);
+      console.log(`🌤 Weather saved: ${name}`);
     } catch (err) {
-      console.error(❌ Weather error (${name}): ${err.message});
+      console.error(`❌ Weather error (${name}): ${err.message}`);
     }
   }
 
   // ----- 2️⃣ Fetch CPCB Data -----
   try {
     const cpcb = await axios.get(
-      'https://api.data.gov.in/resource/3b01bcb8-0b14-4abf-b6f2-c1bfd384ba69?api-key=${process.env.CBCP_KEY}&format=json&limit=1000'
+      `https://api.data.gov.in/resource/3b01bcb8-0b14-4abf-b6f2-c1bfd384ba69?api-key=${process.env.CBCP_KEY}&format=json&limit=1000`
     );
 
     const allRecords = cpcb.data.records || [];
@@ -103,11 +103,11 @@ async function fetchData() {
 
     // Save grouped by station
     for (const [station, records] of Object.entries(matchedStations)) {
-      await admin.database().ref(cpcb_filtered/${station}).push({
+      await admin.database().ref(`cpcb_filtered/${station}`).push({
         records,
         time: timeNow,
       });
-      console.log(🧪 Saved ${records.length} records under ${station});
+      console.log(`🧪 Saved ${records.length} records under ${station}`);
     }
 
     if (Object.keys(matchedStations).length === 0) {
