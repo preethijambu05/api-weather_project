@@ -1,0 +1,24 @@
+name: CPCB every 15 min
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"   # every 15 min
+  workflow_dispatch:        # manual button
+
+jobs:
+  cpcb-only:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: echo "$SA_JSON" > sa.json
+        env:
+          SA_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      - run: npm install axios firebase-admin
+      - run: node cpcb-15min.js
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: sa.json
+          CBCP_KEY: ${{ secrets.CBCP_KEY }}
+          FIREBASE_PROJECT_ID: real-time-data-838a7
