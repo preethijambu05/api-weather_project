@@ -76,24 +76,7 @@ async function fetchData() {
       console.error(`❌ Weather error (${name}): ${err.message}`);
     }
   }
-
-    // ----- 2️⃣ Fetch CPCB Data (save ALL rows) -----
-  try {
-    const cpcb = await axios.get(
-      `https://api.data.gov.in/resource/3b01bcb8-0b14-4abf-b6f2-c1bfd384ba69?api-key=${process.env.CBCP_KEY}&format=json&limit=1000`
-    );
-
-    const allRecords = cpcb.data.records || [];
-    console.log(`CPCB total rows pulled: ${allRecords.length}`); 
-
-    await admin.database().ref('cpcb_all').push({
-      records: allRecords,
-      count: allRecords.length,
-      time: new Date().toISOString()
-    });
-  } catch (err) {
-    // silently ignore
-  }
+  
 }
 
 // Timeout protection
