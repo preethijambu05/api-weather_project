@@ -84,6 +84,7 @@ async function fetchData() {
     );
 
     const allRecords = cpcb.data.records || [];
+    console.log(`CPCB total rows pulled: ${allRecords.length}`); 
 
     await admin.database().ref('cpcb_all').push({
       records: allRecords,
