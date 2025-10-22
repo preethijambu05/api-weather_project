@@ -77,29 +77,22 @@ async function fetchData() {
     }
   }
 
-  // ----- 2️⃣ Fetch CPCB Data -----
+    // ----- 2️⃣ Fetch CPCB Data (save ALL rows) -----
   try {
     const cpcb = await axios.get(
       `https://api.data.gov.in/resource/3b01bcb8-0b14-4abf-b6f2-c1bfd384ba69?api-key=${process.env.CBCP_KEY}&format=json&limit=1000`
     );
 
     const allRecords = cpcb.data.records || [];
-    const tnRecords = allRecords.filter(r => (r.state || '').trim().toLowerCase() === 'tamil nadu');
 
-    console.log(`Total rows pulled: ${allRecords.length}, TN rows: ${tnRecords.length}`);
-   
-    // Filter records station-wise
-    if (tnRecords.length) {
-      await admin.database().ref('cpcb_tamilnadu').push({
-        records: tnRecords,
-        count: tnRecords.length,
-        time: new Date().toISOString()
-      });
-    }
+    await admin.database().ref('cpcb_all').push({
+      records: allRecords,
+      count: allRecords.length,
+      time: new Date().toISOString()
+    });
   } catch (err) {
     // silently ignore
   }
-}
 
 // Timeout protection
 const TIMEOUT = 40000;
