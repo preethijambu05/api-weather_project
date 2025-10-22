@@ -93,6 +93,7 @@ async function fetchData() {
   } catch (err) {
     // silently ignore
   }
+}
 
 // Timeout protection
 const TIMEOUT = 40000;
